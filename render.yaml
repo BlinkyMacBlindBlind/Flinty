@@ -13,9 +13,4 @@ services:
       - key: ELEVENLABS_API_KEY
         value: sk_1a471990bf23f755c28a32fd5d9831cee9b03e041a03b6da
 
-plan: free
-
-
-Save, commit, push.  
-Then reload the Render deploy page and hit retry.  
-Say “next?” when that’s done.
+  plan: free
