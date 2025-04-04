@@ -1,38 +1,45 @@
+
 from flask import Flask, request, jsonify
 import requests
 import os
+import uuid
 
 app = Flask(__name__)
 
-# These should be set as environment variables in Render
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
-@app.route("/bridge", methods=["POST"])
-def bridge():
+@app.route("/v1/chat/completions", methods=["POST"])
+def chat():
     data = request.json
-    user_input = data.get("text", "")
+    messages = data.get("messages", [])
+    prompt = messages[-1]["content"] if messages else ""
 
-    # Forward to OpenRouter (LLM)
-    openrouter_response = requests.post(
-        "https://openrouter.ai/api/v1/generate",
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
         headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"},
-        json={"prompt": user_input}
+        json={
+            "model": "sophosympatheia/midnight-rose-70b",
+            "messages": messages
+        }
     )
-    generated_text = openrouter_response.json().get("text", "")
 
-    # Forward generated response to ElevenLabs (TTS)
-    eleven_response = requests.post(
-        "https://api.elevenlabs.io/v1/text-to-speech",
-        headers={"xi-api-key": ELEVENLABS_API_KEY},
-        json={"text": generated_text, "voice": "default"}
-    )
+    result = response.json()
+    reply = result.get("choices", [{}])[0].get("message", {}).get("content", "")
 
     return jsonify({
-        "llm_response": generated_text,
-        "tts_audio": eleven_response.content.decode("ISO-8859-1")
+        "id": str(uuid.uuid4()),
+        "object": "chat.completion",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": reply
+                }
+            }
+        ]
     })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
+Say `next?` when it’s pushed.
