@@ -1,0 +1,18 @@
+
+
+services:
+  - type: web
+    name: flask-bridge
+    runtime: python
+    repo: https://github.com/BlinkyMacBlindBlind/Flinty
+    branch: main
+    buildCommand: pip install flask requests
+    startCommand: python app.py
+    envVars:
+      - key: OPENROUTER_API_KEY
+        value: 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
+
+      - key: ELEVENLABS_API_KEY
+        value: sk_1a471990bf23f755c28a32fd5d9831cee9b03e041a03b6da
+    plan: free
+Want me to walk you through the upload to GitHub next?
