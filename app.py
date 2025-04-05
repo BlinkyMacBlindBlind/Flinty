@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 import requests
 import os
@@ -54,9 +55,9 @@ def chat():
             }
         ],
         "usage": {
-            "prompt_tokens": 0,
-            "completion_tokens": 0,
-            "total_tokens": 0
+            "prompt_tokens": 12,
+            "completion_tokens": 24,
+            "total_tokens": 36
         }
     })
 
