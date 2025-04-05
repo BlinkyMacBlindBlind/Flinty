@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 import requests
 import os
@@ -19,7 +18,9 @@ def verify_signature(signature, data):
 
 @app.route("/v1/chat/completions", methods=["POST"])
 def chat():
-    data = request.json
+    data = request.get_json(force=True)
+    print("INCOMING FROM ELEVENLABS:", json.dumps(data, indent=2))
+    
     signature = request.headers.get('ElevenLabs-Signature')
     if not verify_signature(signature, data):
         return jsonify({'error': 'Invalid signature'}), 403
