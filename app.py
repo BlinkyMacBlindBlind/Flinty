@@ -23,7 +23,11 @@ def chat():
     
     signature = request.headers.get('ElevenLabs-Signature')
     if not verify_signature(signature, data):
-        return jsonify({'error': 'Invalid signature'}), 403
+        return (
+            jsonify({'error': 'Invalid signature'}),
+            403,
+            {"Content-Type": "application/json"}
+        )
 
     messages = data.get("messages", [])
     model = "sophosympatheia/midnight-rose-70b"
